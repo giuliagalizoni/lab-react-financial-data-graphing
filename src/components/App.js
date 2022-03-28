@@ -4,8 +4,8 @@ import DateInput from "./DateInput";
 function App() {
   return (
     <div>
-      <DateInput />
-      <DateInput />
+      {/* <DateInput />
+      <DateInput /> */}
       <MyChart />
     </div>
   );

@@ -1,8 +1,5 @@
-function DateInput() {
-  function handleChange(event) {
-    console.log(event.target.value);
-  }
-  return <input type="date" onChange={handleChange} />;
+function DateInput(props) {
+  return <input type="date" onChange={props.onChange} name={props.name} />;
 }
 
 export default DateInput;

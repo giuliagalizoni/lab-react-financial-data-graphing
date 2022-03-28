@@ -3,10 +3,16 @@ import { useEffect, useState } from "react";
 import Chart from "chart.js/auto";
 import axios from "axios";
 
+import DateInput from "./DateInput";
+
 function MyChart() {
   const [dates, setDates] = useState([]);
   const [prices, setPrices] = useState([]);
   const [chart, setChart] = useState();
+  const [inputedDate, setInputedDate] = useState({
+    firstDate: "",
+    secondDate: "",
+  });
 
   useEffect(() => {
     async function fetchData() {
@@ -18,14 +24,27 @@ function MyChart() {
         entries.sort((a, b) => {
           return new Date(a[0]) - new Date(b[0]);
         });
-        setDates(entries.map((currentArr) => currentArr[0]));
+        const dateArr = entries.map((currentArr) => currentArr[0]);
+        const filteredArr = dateArr.filter((currentElement) => {
+          if (
+            currentElement === new Date(inputedDate.firstDate) ||
+            currentElement === new Date(inputedDate.secondDate)
+          ) {
+            return currentElement;
+          }
+        });
+        setDates(filteredArr);
 
         setPrices(entries.map((currentArr) => currentArr[1]));
+
+        console.log(filteredArr);
       } catch (err) {
         console.log(err);
       }
     }
     fetchData();
+
+    console.log("data do input", inputedDate);
   }, []);
 
   useEffect(() => {
@@ -55,9 +74,27 @@ function MyChart() {
     setChart(myChart);
   }, [dates, prices]);
 
+  function handleFirstDateChange(event) {
+    setInputedDate({
+      firstDate: event.target.value,
+      secondDate: inputedDate.secondDate,
+    });
+    console.log(inputedDate);
+  }
+
+  function handleSecondDateChange(event) {
+    setInputedDate({
+      firstDate: inputedDate.firstDate,
+      secondDate: event.target.value,
+    });
+    console.log(inputedDate);
+  }
+
   return (
-    <div style={{ position: "relative", height: "30vh" }}>
-      <canvas id="myChart" width="100" height="100"></canvas>
+    <div id="canvasChart">
+      <DateInput onChange={handleFirstDateChange} name={"firstDate"} />
+      <DateInput onChange={handleSecondDateChange} name={"secondDate"} />
+      <canvas id="myChart" width="1100" height="450"></canvas>
     </div>
   );
 }
